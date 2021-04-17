@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:html5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"></link>
+    </h:head>
+    <h:body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+
+                    
+                     <c:if test="#{ususarioSession.mesError.equalsIgnoreCase('mOk')}">
+                        <div class="alert alert-success" role="alert">
+                            Encontrado !!!
+                        </div>
+                    </c:if>
+                    
+                     <c:if test="#{ususarioSession.mesError.equalsIgnoreCase('mBad')}">
+                        <div class="alert alert-warning" role="alert">
+                            Por favor verifique sus datos !!!
+                        </div>
+                    </c:if>
+                    
+                     <c:if test="#{ususarioSession.mesError.equalsIgnoreCase('mError')}">
+                        <div class="alert alert-danger" role="alert">
+                            intente mas tarde !!!
+                        </div>
+                    </c:if>
+                    
+                     <c:if test="#{ususarioSession.mesError.equalsIgnoreCase('mAdmin')}">
+                        <div class="alert alert-info" role="alert">
+                           Contacte al administrador del sitio !!!
+                        </div>
+                    </c:if>
+                    
+                    
+                    <h:form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Correo</label>
+                            <h:inputText 
+                                value="#{ususarioSession.correoIn}" 
+                                required="true"
+                                requiredMessage="Por favor ingrese un correo electronico"
+                                class="form-control" id="exampleInputEmail1" 
+                                html5:aria-describedby="emailHelp"/>
+                            <small id="emailHelp" class="form-text text-muted">ingrese un correo electronico.</small>
+                            <h:message for="exampleInputEmail1" style="color: red"></h:message>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Clave</label>
+                            <h:inputSecret
+                                value="#{ususarioSession.claveIn}" 
+                                requiredMessage="Por favor ingrese una clave"
+                                class="form-control" 
+                                required="true"
+                                id="exampleInputPassword1"/>
+                            <small id="passwordHelp" class="form-text text-muted">ingrese una clave.</small>
+                             <h:message for="exampleInputPassword1" style="color: red"></h:message>
+                        </div>
+                        <div class="form-group form-check">
+                            <a href="recuperar.xhtml" type="button" class="btn btn-primary btn-lg btn-block">Recuperar contraseña</a>
+                            <a href="registrar.xhtml" type="button" class="btn btn-secondary btn-lg btn-block">Registarme !!</a>
+                            <h:commandButton action="#{ususarioSession.validarUsuario()}" class="btn btn-success btn-lg btn-block" value="Iniciar Session" />
+                        </div>
+                    </h:form>
+
+                </div>
+                <div class="col-md-4"></div>
+
+
+
+
+            </div>
+
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    </h:body>
+</html>
+
