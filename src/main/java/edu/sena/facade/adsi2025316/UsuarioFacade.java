@@ -47,6 +47,32 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
         }
     }
     
+    
+    @Override
+     public Usuario leerUsuario(int id_ususario){
+         try {
+             em.getEntityManagerFactory().getCache().evictAll();
+             Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.usuUsuarioid = :id_ususario");
+             q.setParameter("id_ususario",  id_ususario);
+             return  (Usuario) q.getSingleResult();
+         } catch (Exception e) {
+         return null;
+         }         
+     }
+     
+     @Override
+     public Usuario recordarClave(String correoIn){
+         try {
+           Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.usuCorreo = :correoIn");
+           q.setParameter("correoIn",  correoIn);
+           return  (Usuario) q.getSingleResult();
+         } catch (Exception e) {
+             return null;
+         }         
+     
+     }
+     
+    
     public UsuarioFacade() {
         super(Usuario.class);
     }

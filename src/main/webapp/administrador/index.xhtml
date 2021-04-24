@@ -3,11 +3,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:html5="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Administrador</title>
         <link rel="canonical" href="https://getbootstrap.com/docs/4.6/examples/dashboard/"></link>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"></link>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"></link>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css"/>
+
     </h:head>
     <h:body>
 
@@ -17,7 +21,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"/>
-            <ul class="navbar-nav px-3">
+            <ul class="navbar-nav px-3">|
                 <li class="nav-item text-nowrap">
                     <a class="nav-link" href="#">Sign out</a>
                 </li>
@@ -47,21 +51,104 @@
                         <h1 class="h2">Administrador</h1>
                         <div class="btn-toolbar mb-2 mb-md-0">
                             <div class="btn-group mr-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">#{ususarioSession.usuLog.usuNombre} #{ususarioSession.usuLog.usuApellido}</button>
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                                <span data-feather="calendar"></span>
-                                This week
-                            </button>
+
                         </div>
                     </div>
 
 
 
-                    <h2>Section title</h2>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-sm">
+                    <h2>Usuarios</h2>
+
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Crear usuario
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Crear usuario</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+                                <h:form>
+                                    <div class="modal-body">
+
+
+                                        <div class="form-group">
+                                            <label for="formTd">Tipo Documento</label>
+                                            <h:selectOneMenu value="#{ususarioSession.usuNuevo.usuTipodocumento}" required="true" class="form-control">
+                                                <f:selectItem itemLabel="T. Identidad" itemValue="T. Identidad"></f:selectItem>
+                                                <f:selectItem itemLabel="Cedula" itemValue="Cedula"></f:selectItem>
+                                                <f:selectItem itemLabel="Cedula Extranjeria" itemValue="Cedula Extranjeria"></f:selectItem>
+                                                <f:selectItem itemLabel="Nit" itemValue="Nit"></f:selectItem>
+                                                <f:selectItem itemLabel="Otro." itemValue="Otro"></f:selectItem>
+                                            </h:selectOneMenu>
+                                            <small id="tplHelp" class="form-text text-muted">Seleccione un tipo de cocumento.</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="fmrDocumento">Documento</label>
+                                            <h:inputText html5:type="number"
+                                                         value="#{ususarioSession.usuNuevo.usuDocumento}"
+                                                         requiredMessage="Por favor Ingrese un documento"
+                                                         maxlength="10"
+                                                         required="true"
+                                                         class="form-control"
+                                                         id="fmrDocumento" />
+                                            <h:message for="fmrDocumento" style="color: red"></h:message>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="fmrNombres">Nombres</label>
+                                            <h:inputText value="#{ususarioSession.usuNuevo.usuNombre}"  requiredMessage="Por favor Ingrese sus nombres" required="true" class="form-control" id="fmrNombres" />
+                                            <h:message for="fmrNombres" style="color: red"></h:message>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="fmrApellidos">Apellidos</label>
+                                            <h:inputText value="#{ususarioSession.usuNuevo.usuApellido}" requiredMessage="Por favor Ingrese sus apellidos" required="true" class="form-control" id="fmrApellidos" html5:aria-describedby="apellidosHelp"/>
+                                            <h:message for="fmrApellidos" style="color: red"></h:message>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Correo</label>
+                                            <h:inputText value="#{ususarioSession.usuNuevo.usuCorreo}" requiredMessage="Por favor Ingrese su correo" required="true" class="form-control" id="exampleInputEmail1" html5:aria-describedby="emailHelp"/>
+                                            <h:message for="exampleInputEmail1" style="color: red"></h:message>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputPassword1">Clave</label>
+                                            <h:inputSecret value="#{ususarioSession.usuNuevo.usuClave}" requiredMessage="Por favor Ingrese una clave" required="true" class="form-control" id="exampleInputPassword1"/>
+                                            <h:message for="exampleInputPassword1" style="color: red"></h:message>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="fmrMovil">Movil</label>
+                                            <h:inputText value="#{ususarioSession.usuNuevo.usuMovil}"  class="form-control" id="fmrMovil"/>
+                                            <small id="movilHelp" class="form-text text-muted">ingrese un numero de celular.</small>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        <h:commandButton  class="btn btn-success btn-lg btn-block" value="Crear" action="#{ususarioSession.crearUsuario()}" />
+                                    </div>
+                                </h:form>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tablaUsuarios" class="table-responsive">
+                        <table  class="table table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th>Cod-Usuario</th>
@@ -71,34 +158,219 @@
                                     <th>Apellidos</th>
                                     <th>Correo</th>
                                     <th>Movil</th>
+                                    <th>Estado</th>
+
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach items="#{ususarioSession.todosUsuarios()}" var="usu">
-                                    <tr>
-                                        <td>#{usu.usuUsuarioid}</td>
-                                        <td>#{usu.usuTipodocumento}</td>
-                                        <td>#{usu.usuDocumento}</td>
-                                        <td>#{usu.usuNombre}</td>
-                                        <td>#{usu.usuApellido}</td>
-                                        <td>#{usu.usuCorreo}</td>
-                                        <td>#{usu.usuMovil}</td>
-                                        <td>
-                                            -------------
-                                        </td>
-                                    </tr>
-                                </c:forEach>
+                                <h:form>
+                                    <c:forEach items="#{ususarioSession.todosUsuarios()}" var="usu">
+                                        <c:if test="#{ususarioSession.usuLog.usuUsuarioid != usu.usuUsuarioid }">
+                                            <tr>
+                                                <td>#{usu.usuUsuarioid}</td>
+                                                <td>#{usu.usuTipodocumento}</td>
+                                                <td>#{usu.usuDocumento}</td>
+                                                <td>#{usu.usuNombre}</td>
+                                                <td>#{usu.usuApellido}</td>
+                                                <td>#{usu.usuCorreo}</td>
+                                                <td>#{usu.usuMovil}</td>
+                                                <td>
+                                                    <c:if test="#{usu.usuEstado == 1}">
+                                                        <button class="btn btn-outline-success"> Activo</button>
+                                                    </c:if>
+
+                                                    <c:if test="#{usu.usuEstado == 0}">
+                                                        <button class="btn btn-outline-success"> Inactivo</button>
+                                                    </c:if>
+
+                                                </td>
+
+                                                <td>
+                                                    <h:commandButton  onclick="$('#estado').show(); $('#tablaUsuarios').hide();" class="btn btn-outline-primary" value="A">
+                                                        <f:ajax  event="click" listener="#{ususarioSession.editarUsuario(usu)}" render="formActualizar"  ></f:ajax>
+                                                    </h:commandButton>
+
+                                                    <h:commandButton  action="#{ususarioSession.cambiarEstado(usu)}"  class="btn btn-outline-danger" value="IN">
+
+                                                    </h:commandButton>
+
+
+                                                    <!-- Button trigger modal -->
+                                                    <h:commandButton action="#{ususarioSession.editarUsuario(usu)}" class="btn btn-outline-success" html5:data-toggle="modal" html5:data-target="#exampleRoles" value="R">
+                                                        <f:ajax render="modalRoles"></f:ajax>
+                                                    </h:commandButton>
+
+                                                </td>
+                                            </tr>
+                                        </c:if>                               
+                                    </c:forEach>
+                                </h:form>
                             </tbody>
                         </table>
                     </div>
+
+
+                    <h:panelGroup id="formActualizar" >
+                        <div class="row"  id="estado" >
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+
+                                <c:if test="#{ususarioSession.mesError.equalsIgnoreCase('m1')}">
+                                    <div class="alert alert-danger" role="alert">
+                                        Por favor verifique sus datos, intente de nuevo !!!
+                                    </div>
+                                </c:if>
+
+                                <c:if test="#{ususarioSession.mesError.equalsIgnoreCase('m2')}">
+                                    <div class="alert alert-success" role="alert">
+                                        Actaluzacion satisfactoria !!!
+                                    </div>
+                                </c:if>
+
+                                <h:form>
+
+                                    <div class="form-group">
+                                        <label for="formTd">Tipo Documento</label>
+                                        <h:selectOneMenu value="#{ususarioSession.usuEditar.usuTipodocumento}" disabled="true" class="form-control">
+                                            <f:selectItem itemLabel="T. Identidad" itemValue="T. Identidad"></f:selectItem>
+                                            <f:selectItem itemLabel="Cedula" itemValue="Cedula"></f:selectItem>
+                                            <f:selectItem itemLabel="Cedula Extranjeria" itemValue="Cedula Extranjeria"></f:selectItem>
+                                            <f:selectItem itemLabel="Nit" itemValue="Nit"></f:selectItem>
+                                            <f:selectItem itemLabel="Otro." itemValue="Otro"></f:selectItem>
+                                        </h:selectOneMenu>
+                                        <small id="tplHelp" class="form-text text-muted">Seleccione un tipo de cocumento.</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="fmrDocumento">Documento</label>
+                                        <h:inputText html5:type="number"
+                                                     value="#{ususarioSession.usuEditar.usuDocumento}"
+                                                     requiredMessage="Por favor Ingrese un documento"
+                                                     maxlength="10"
+                                                     disabled="true"
+                                                     class="form-control"
+                                                     id="fmrDocumento" />
+                                        <h:message for="fmrDocumento" style="color: red"></h:message>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="fmrNombres">Nombres</label>
+                                        <h:inputText value="#{ususarioSession.usuEditar.usuNombre}"  requiredMessage="Por favor Ingrese sus nombres" required="true" class="form-control" id="fmrNombres" />
+                                        <h:message for="fmrNombres" style="color: red"></h:message>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="fmrApellidos">Apellidos</label>
+                                        <h:inputText value="#{ususarioSession.usuEditar.usuApellido}" requiredMessage="Por favor Ingrese sus apellidos" required="true" class="form-control" id="fmrApellidos" html5:aria-describedby="apellidosHelp"/>
+                                        <h:message for="fmrApellidos" style="color: red"></h:message>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Correo</label>
+                                        <h:inputText value="#{ususarioSession.usuEditar.usuCorreo}" requiredMessage="Por favor Ingrese su correo" disabled="true" class="form-control" id="exampleInputEmail1" html5:aria-describedby="emailHelp"/>
+                                        <h:message for="exampleInputEmail1" style="color: red"></h:message>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Clave</label>
+                                        <h:inputSecret value="#{ususarioSession.usuEditar.usuClave}" requiredMessage="Por favor Ingrese una clave" required="true" class="form-control" id="exampleInputPassword1"/>
+                                        <h:message for="exampleInputPassword1" style="color: red"></h:message>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="fmrMovil">Movil</label>
+                                        <h:inputText value="#{ususarioSession.usuEditar.usuMovil}"  class="form-control" id="fmrMovil"/>
+                                        <small id="movilHelp" class="form-text text-muted">ingrese un numero de celular.</small>
+                                    </div>
+
+
+                                    <div class="form-group form-check">
+                                        <button class="btn btn-success" 
+                                                onclick="$('#estado').hide(); $('#tablaUsuarios').show();" > Cancelar </button>
+                                        <h:commandButton  class="btn btn-primary " value="Actualizar datos" action="#{ususarioSession.actualizarDatosUsuario()}" />
+                                    </div>
+                                </h:form>
+                            </div>
+                            <div class="col-md-4"></div>
+
+                        </div>
+                    </h:panelGroup>
+
+
                 </main>
             </div>
+
+
+
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleRoles" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <h:panelGroup id="modalRoles">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">#{ususarioSession.usuEditar.usuNombre} #{ususarioSession.usuEditar.usuApellido}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="row">
+                                    <h:form>
+                                        <div class="col-md-6">
+                                            <h4 style="color: #007bff" >Activos</h4>
+
+                                            <c:forEach items="#{ususarioSession.usuEditar.rolCollection}" var="rol">
+                                                <h:commandButton  class="btn btn-outline-success"  value="#{rol.nombre}">
+                                                    <f:ajax render="@form" listener="#{ususarioSession.removerRol(rol.roRolid)}"></f:ajax>
+                                                </h:commandButton>
+                                                <br/>    
+                                            </c:forEach>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h4 style="color: brown" >Sin asignar</h4>
+
+                                            <c:forEach items="#{ususarioSession.usuarioNoRoles()}" var="role">
+                                                <h:commandButton  class="btn btn-outline-success"  value="#{role.nombre}">
+                                                    <f:ajax render="@form" listener="#{ususarioSession.adicionarRol(role.roRolid)}"></f:ajax>
+                                                </h:commandButton>
+                                                <br/>    
+                                            </c:forEach>
+
+                                        </div>
+
+                                    </h:form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+
         </div>
+
 
         <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+
+
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+        <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+        <script type="text/javascript">
+                                                    $(document).ready(function () {
+                                                        $('#estado').hide();
+                                                    }
+        </script>
+
     </h:body>
 </html>
 

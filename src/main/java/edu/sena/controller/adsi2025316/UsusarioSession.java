@@ -5,8 +5,11 @@
  */
 package edu.sena.controller.adsi2025316;
 
+import edu.sena.adsi2025316.Rol;
 import edu.sena.adsi2025316.Usuario;
+import edu.sena.facade.adsi2025316.RolFacadeLocal;
 import edu.sena.facade.adsi2025316.UsuarioFacadeLocal;
+import edu.sena.utilidades.adsi2025316.Email;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -24,8 +27,12 @@ public class UsusarioSession implements Serializable {
 
     @EJB
     UsuarioFacadeLocal usuarioFacadeLocal;
+    @EJB
+    RolFacadeLocal rolFacadeLocal;
+
     private Usuario usuNuevo = new Usuario();
     private Usuario usuLog = new Usuario();
+    private Usuario usuEditar = new Usuario();
 
     private String mesError = "";
     private String correoIn = "";
@@ -59,6 +66,16 @@ public class UsusarioSession implements Serializable {
         }
     }
 
+    public void actualizarDatosUsuario() {
+        mesError = "";
+        try {
+            usuarioFacadeLocal.edit(usuEditar);
+            mesError = "m2";
+        } catch (Exception e) {
+            mesError = "m1";
+        }
+    }
+
     public List<Usuario> todosUsuarios() {
         return usuarioFacadeLocal.findAll();
     }
@@ -80,6 +97,58 @@ public class UsusarioSession implements Serializable {
         } catch (Exception e) {
             mesError = "mError";
         }
+    }
+
+    public void editarUsuario(Usuario usuEditar) {
+        this.usuEditar = usuEditar;
+    }
+
+    public List<Rol> usuarioNoRoles() {
+        try {
+            return rolFacadeLocal.usuarioNoRoles(usuEditar.getUsuUsuarioid());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void removerRol(int id_rol) {
+        try {
+            boolean salida = rolFacadeLocal.removerRol(usuEditar.getUsuUsuarioid(), id_rol);
+        } catch (Exception e) {
+            System.out.println("edu.sena.controller.adsi2025316.UsusarioSession.removerRol() " + e.getMessage());
+        }
+        usuEditar = usuarioFacadeLocal.leerUsuario(usuEditar.getUsuUsuarioid());
+
+    }
+
+    public void adicionarRol(int id_rol) {
+        try {
+            boolean salida = rolFacadeLocal.addRol(usuEditar.getUsuUsuarioid(), id_rol);
+        } catch (Exception e) {
+            System.out.println("edu.sena.controller.adsi2025316.UsusarioSession.removerAdicionarRol()" + e.getMessage());
+        }
+        usuEditar = usuarioFacadeLocal.leerUsuario(usuEditar.getUsuUsuarioid());
+    }
+
+    public void cambiarEstado(Usuario usuEstado) {
+
+        if (usuEstado.getUsuEstado() == 1) {
+            usuEstado.setUsuEstado(Short.parseShort("0"));
+        } else {
+            usuEstado.setUsuEstado(Short.parseShort("1"));
+        }
+        usuarioFacadeLocal.edit(usuEstado);
+    }
+
+    public void recordarClave() {
+        Usuario usuClave = usuarioFacadeLocal.recordarClave(correoIn);
+        if (usuClave != null && !usuClave.getUsuNombre().isEmpty()) {
+            Email.recuperarClaves(correoIn, usuClave.getUsuClave());
+            mesError = "ok";
+        } else {
+            mesError = "bad";
+        }
+
     }
 
     public Usuario getUsuNuevo() {
@@ -121,6 +190,14 @@ public class UsusarioSession implements Serializable {
 
     public void setUsuLog(Usuario usuLog) {
         this.usuLog = usuLog;
+    }
+
+    public Usuario getUsuEditar() {
+        return usuEditar;
+    }
+
+    public void setUsuEditar(Usuario usuEditar) {
+        this.usuEditar = usuEditar;
     }
 
 }
